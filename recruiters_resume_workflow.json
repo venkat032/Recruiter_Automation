@@ -1,0 +1,883 @@
+{
+  "name": "recruiters_resume_workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "10AALaw14svzE_Ei_rKf2D8evS2Wj7WZ3",
+          "mode": "list",
+          "cachedResultName": "Accounts",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/10AALaw14svzE_Ei_rKf2D8evS2Wj7WZ3"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        -144
+      ],
+      "id": "1d638bae-01aa-44c4-924d-e6f0dcb1024a",
+      "name": "Trigger - Accounts",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "B0r8enX28dUq8lHw",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1t0m-r1GrGEmtwGdxnneCdSeUZj9ZQby9",
+          "mode": "list",
+          "cachedResultName": "Digital Marketing",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1t0m-r1GrGEmtwGdxnneCdSeUZj9ZQby9"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        16
+      ],
+      "id": "ec714251-7275-48da-b55c-4662e7c61382",
+      "name": "Trigger - Digital-marketing",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "B0r8enX28dUq8lHw",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1v-2r-D6YwdFD81eHujGQisKiDaKnILqL",
+          "mode": "list",
+          "cachedResultName": "Customer service",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1v-2r-D6YwdFD81eHujGQisKiDaKnILqL"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        240
+      ],
+      "id": "7c2614b3-27a9-4ced-9201-e371d1f2abd2",
+      "name": "Trigger - Customer service",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "B0r8enX28dUq8lHw",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        400,
+        16
+      ],
+      "id": "8ab07670-d40f-430e-a561-4433fd6f6664",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "B0r8enX28dUq8lHw",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a resume parser.\n\nExtract details for ONLY ONE candidate (the main person in the resume).\n\nIgnore:\n- Example profiles\n- Dummy data like \"John Doe\"\n- Any multiple profiles or repeated sections\n\nReturn ONLY the primary candidate's information.\n\nExtract:\n- name\n- email\n- phone\n- location\n- qualification (highest qualification only)\n- current_role (latest/current job only)\n- total_experience (include current job duration)\n\nIMPORTANT:\n- Do NOT return multiple entries\n- Do NOT mix data from different people\n- If multiple experiences exist, calculate total experience including current role\n- If any field is missing, return null\n- Return ONLY valid JSON\n\n- qualification:\n  Return only the highest qualification.\n\n- current_role:\n  Extract the latest/current job role.\n\nIMPORTANT FOR EXPERIENCE:\n- If a job has \"present\", treat it as ongoing and calculate till today\n- Always include current job duration\n- Do NOT just copy numbers from resume\n- Calculate from dates if available\n\nResume:\n{{ $json.text || $json.data }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1072,
+        32
+      ],
+      "id": "96942403-a962-44f2-8fb3-f40788938e8f",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "lziHM7ud8IWxZ1Mt",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d46f9bf2-c5e6-4456-a103-494e358ccf21",
+              "name": "parsed",
+              "value": "={{ JSON.parse($json[\"output\"][0][\"content\"][0][\"text\"].replace(/```json\\n?|```/g, \"\").trim()) }}",
+              "type": "object"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1408,
+        64
+      ],
+      "id": "240de7f6-02a8-43ef-b6d7-d10648db2441",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1mFeLE0t4PGhBY3Gy4MkyEhVcaZJMVRpEvrvTPiWw614",
+          "mode": "list",
+          "cachedResultName": "Resume",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mFeLE0t4PGhBY3Gy4MkyEhVcaZJMVRpEvrvTPiWw614/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1879262397,
+          "mode": "list",
+          "cachedResultName": "Accounts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mFeLE0t4PGhBY3Gy4MkyEhVcaZJMVRpEvrvTPiWw614/edit#gid=1879262397"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.parsed.name }}",
+            "Email": "={{ $json.parsed.email }}",
+            "Phone": "='{{$json.parsed.phone}}'",
+            "Location": "={{ $json.parsed.location }}",
+            "Qualification": "={{\nArray.isArray($json.parsed.qualification)\n  ? $json.parsed.qualification.map(q => q.degree).join(\", \")\n  : $json.parsed.qualification\n}}",
+            "Current role": "={{ $json.parsed.current_role }}",
+            "Experience": "={{\n  $json.parsed.total_experience\n  || $json.parsed.experience\n  || ($json.parsed.experience_summary ? $json.parsed.experience_summary : \"\")\n}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Qualification",
+              "displayName": "Qualification",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Current role",
+              "displayName": "Current role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1952,
+        -80
+      ],
+      "id": "6bf0a07d-29ea-4263-b5b0-31ddaead9a4c",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hUKkqiy67574xYIu",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "55074dba-6731-4d78-b83f-27e82ead19dd",
+              "leftValue": "={{$node[\"Download file\"].json[\"parents\"][0]}}",
+              "rightValue": "=10AALaw14svzE_Ei_rKf2D8evS2Wj7WZ3",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1632,
+        64
+      ],
+      "id": "a675098d-fe48-4bca-beda-8884e99b94ff",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2a61f538-b121-4d0a-8ae7-989c7ea75d51",
+              "leftValue": "={{$node[\"Download file\"].json[\"parents\"][0]}}",
+              "rightValue": "1v-2r-D6YwdFD81eHujGQisKiDaKnILqL",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1728,
+        368
+      ],
+      "id": "21c85efc-80d2-4079-a68c-b1185c6087b4",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1mFeLE0t4PGhBY3Gy4MkyEhVcaZJMVRpEvrvTPiWw614",
+          "mode": "list",
+          "cachedResultName": "Resume",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mFeLE0t4PGhBY3Gy4MkyEhVcaZJMVRpEvrvTPiWw614/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customer service",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mFeLE0t4PGhBY3Gy4MkyEhVcaZJMVRpEvrvTPiWw614/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{$json.parsed.name}}",
+            "Phone": "='{{$json.parsed.phone}}'",
+            "Email": "={{$json.parsed.email}}",
+            "Location": "={{$json.parsed.location}}",
+            "Qualification": "={{\nArray.isArray($json.parsed.qualification)\n  ? $json.parsed.qualification.map(q => q.degree).join(\", \")\n  : $json.parsed.qualification\n}}",
+            "Current role": "={{$json.parsed.current_role}}",
+            "Experience": "={{\n  $json.parsed.total_experience\n  || $json.parsed.experience\n  || ($json.parsed.experience_summary ? $json.parsed.experience_summary : \"\")\n}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Qualification",
+              "displayName": "Qualification",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Current role",
+              "displayName": "Current role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2000,
+        208
+      ],
+      "id": "fd651b0e-1509-4dd2-a3dc-4c1bed0cc3a5",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hUKkqiy67574xYIu",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1mFeLE0t4PGhBY3Gy4MkyEhVcaZJMVRpEvrvTPiWw614",
+          "mode": "list",
+          "cachedResultName": "Resume",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mFeLE0t4PGhBY3Gy4MkyEhVcaZJMVRpEvrvTPiWw614/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2037632903,
+          "mode": "list",
+          "cachedResultName": "Digital Marketing",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mFeLE0t4PGhBY3Gy4MkyEhVcaZJMVRpEvrvTPiWw614/edit#gid=2037632903"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Experience": "={{\n  $json.parsed.total_experience\n  || $json.parsed.experience\n  || ($json.parsed.experience_summary ? $json.parsed.experience_summary : \"\")\n}}",
+            "Location": "={{$json.parsed.location}}",
+            "Current role": "={{$json.parsed.current_role}}",
+            "Qualification": "={{\nArray.isArray($json.parsed.qualification)\n  ? $json.parsed.qualification.map(q => q.degree).join(\", \")\n  : $json.parsed.qualification\n}}",
+            "Email": "={{$json.parsed.email}}",
+            "Phone": "='{{$json.parsed.phone}}'",
+            "Name": "={{$json.parsed.name}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Qualification",
+              "displayName": "Qualification",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Current role",
+              "displayName": "Current role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Experience",
+              "displayName": "Experience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2016,
+        528
+      ],
+      "id": "c68314ec-90ec-45c2-8eb3-14e05896f765",
+      "name": "Append row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "hUKkqiy67574xYIu",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f636bd41-beec-4f3d-92e7-25733afcb46e",
+              "name": "domain",
+              "value": "accounts",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        -144
+      ],
+      "id": "4ac25e2f-cfcf-4951-9442-fe98cfd821a1",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0909a06f-07df-4b9d-b3da-0cd8896564b7",
+              "name": "domain",
+              "value": "Digital Marketing",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        16
+      ],
+      "id": "27558e4e-cec1-479e-8a0e-d42e7cbe8b31",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "16d3155a-00c6-464d-aea8-c82aeb8fe84e",
+              "name": "domain",
+              "value": "customer service",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        240
+      ],
+      "id": "09a4cfee-4ef9-45bd-a51e-14786d0a2d35",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        48
+      ],
+      "id": "da0253a4-2aec-4c07-8133-de04a109ee34",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2b668316-18a6-4500-83e0-5030fdf1c8c7",
+              "name": "text",
+              "value": "={{ ($json.text || $json.data).replace(/\\s+/g, ' ').trim() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        48
+      ],
+      "id": "524ca232-df58-4cb5-8ebb-7f01e29443fa",
+      "name": "Edit Fields1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Trigger - Accounts": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger - Digital-marketing": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger - Customer service": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0cc77aab-1ddc-47e3-b297-fd05d4748e9e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b7aa6f5043d9841a945d4284dfe99e5954bfa6f8d1b03d023c0f7227aa1b8697"
+  },
+  "id": "QaZSmJYXbrj2YsX2",
+  "tags": []
+}
